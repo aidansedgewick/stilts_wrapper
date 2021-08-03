@@ -10,5 +10,7 @@ setup(
         license="MIT license",
         #install_requires=requirements,
         packages = find_packages(),
+        include_package_data=True,
+        package_data={'': ['configuration/*.yaml']},
 )
 

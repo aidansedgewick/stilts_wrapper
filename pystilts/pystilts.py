@@ -14,12 +14,13 @@ class StiltsError(Exception):
 class Stilts:
 
     STILTS_EXE = STILTS_EXE
+    KNOWN_TASKS = KNOWN_TASKS
 
     INPUT_FORMATS = None
     OUTPUT_FORMATS = None
 
     def __init__(self, task, strict_parameters=True, **kwargs):
-        if task not in KNOWN_TASKS["all_tasks"]:
+        if task not in self.KNOWN_TASKS["all_tasks"]:
             raise StiltsError(f"Task {task} not known.")
         self.task = task
         

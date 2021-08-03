@@ -2,7 +2,8 @@ import yaml
 from pathlib import Path
 
 def _load_known_tasks():
-    known_tasks_path = Path(__file__).absolute().parent / "known_tasks.yaml"
+    config_dir = Path(__file__).absolute().parent / "configuration"
+    known_tasks_path = config_dir / "known_tasks.yaml"
     with open(known_tasks_path, "r") as f:
         known_tasks= yaml.load(f, Loader=yaml.FullLoader)
         known_tasks["all_tasks"] = [
