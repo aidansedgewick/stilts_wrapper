@@ -4,51 +4,20 @@ import subprocess
 import yaml
 
 from .known_tasks import KNOWN_TASKS
-from .utils import format_flags
+from .utils import get_docs_hint, task_help, get_task_parameters, format_flags, STILTS_EXE
 
 logger = logging.getLogger("stilts_wrapper")
-
-DOCS_URL = "http://www.star.bris.ac.uk/~mbt/stilts/"
-
-STILTS_EXE = os.environ.get("PYSTILTS_EXE", "stilts")
-
-INPUT_FORMATS = None
-
-def get_docs_hint(task):
-    hint = f"check docs?\n    {docs_url}/sun256/{task}.html"
-    return hint
-
-def task_help(task, parameter=None):
-    help_cmd = f"{STILTS_EXE} {task} help"
-    if parameter is not None:
-        help_cmd += f"={parameter}"
-    help = subprocess.getoutput(help_cmd)
-    return help
-
-def get_task_parameters(task):
-    help = task_help(task)
-    spl = help.split()
-    assert spl[1] == task
-    parameters = {}
-    for line in spl[2:]:
-        line = line.replace("[", "").replace("]", "")
-        param, vals = line.split("=")
-        if vals.startswith("<") and vals.endswith(">"):
-            accepted = None
-        else:
-            accepted = vals.split("|")
-        if param.startswith("ifmt") and accepted is None:
-            accepted = INPUT_FORMATS
-        parameters[param] = accepted
-    return parameters
-        
-    
 
 class StiltsError(Exception):
     pass
 
-
 class Stilts:
+
+    STILTS_EXE = STILTS_EXE
+
+    INPUT_FORMATS = None
+    OUTPUT_FORMATS = None
+
     def __init__(self, task, strict_parameters=True, **kwargs):
         if task not in KNOWN_TASKS["all_tasks"]:
             raise StiltsError(f"Task {task} not known.")
@@ -69,9 +38,11 @@ class Stilts:
         self.build_cmd()
 
     def build_cmd(self, float_precision=6):
-        cmd = f"{STILTS_EXE} {self.task} "
-        flags = format_flags(self.parameters, capitalise=False, float_precision=float_precision)
-        cmd += " ".join(f"{k}={v}" for k, v in self.parameters.items())
+        cmd = f"{self.STILTS_EXE} {self.task} "
+        formatted_parameters = format_flags(
+            self.parameters, capitalise=False, float_precision=float_precision
+        )
+        cmd += " ".join(f"{k}={v}" for k, v in formatted_parameters.items())
         self.cmd = cmd
 
     def update_parameters(self, **kwargs):
@@ -100,6 +71,8 @@ class Stilts:
             errormsg = f"run: Something went wrong (status={status}).\n{docs_hint}"
             raise StiltsError(error_msg)
         return status
+
+
 
     #def task_help(self, task, parameter=None):
         

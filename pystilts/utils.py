@@ -1,3 +1,37 @@
+import os
+import subprocess
+from pathlib import Path
+
+STILTS_EXE = os.environ.get("PYSTILTS_EXE", "stilts")
+
+def get_docs_hint(task):
+    hint = f"check docs?\n    {docs_url}/sun256/{task}.html"
+    return hint
+
+def task_help(task, parameter=None):
+    help_cmd = f"{STILTS_EXE} {task} help"
+    if parameter is not None:
+        help_cmd += f"={parameter}"
+    help = subprocess.getoutput(help_cmd)
+    return help
+
+def get_task_parameters(task):
+    help = task_help(task)
+    spl = help.split()
+    assert spl[1] == task
+    parameters = {}
+    for line in spl[2:]:
+        line = line.replace("[", "").replace("]", "")
+        param, vals = line.split("=")
+        if vals.startswith("<") and vals.endswith(">"):
+            accepted = None
+        else:
+            accepted = vals.split("|")
+        #if param.startswith("ifmt") and accepted is None:
+        #    accepted = INPUT_FORMATS
+        parameters[param] = accepted
+    return parameters
+
 def format_flags(config, capitalise=True, float_precision=6):
     """
     Capitalise config keys.
