@@ -1,6 +1,14 @@
 import os
+import logging
+import re
 import subprocess
 from pathlib import Path
+
+from astropy.coordinates import SkyCoord
+
+from .exc import StiltsError, StiltsUnknownTaskError, StiltsUnknownParameterError
+
+logger = logging.getLogger("stilts_utils")
 
 STILTS_EXE = os.environ.get("PYSTILTS_EXE", "stilts")
 DOCS_URL = "http://www.star.bris.ac.uk/~mbt/stilts/"
@@ -9,15 +17,18 @@ def get_docs_hint(task):
     hint = f"check docs?\n    {DOCS_URL}sun256/{task}.html"
     return hint
 
-def task_help(task, parameter=None):
+def get_task_help(task, parameter=None):
     help_cmd = f"{STILTS_EXE} {task} help"
     if parameter is not None:
         help_cmd += f"={parameter}"
     help = subprocess.getoutput(help_cmd)
+
+    if "SYNOPSIS" in help:
+        pass
     return help
 
-def get_task_parameters(task, nin=None):
-    help = task_help(task)
+def get_task_parameters(task):
+    help = get_task_help(task)
     spl = help.split()
     assert spl[1] == task
     parameters = {}
@@ -33,7 +44,93 @@ def get_task_parameters(task, nin=None):
         parameters[param] = accepted
     return parameters
 
-def format_flags(config, capitalise=True, float_precision=6):
+def get_stilts_flags():
+    """
+    pattern = re.compile("\[([-\w\s\<\>])+\]")
+    for match in pattern.finditer(flagstr):
+        print(match)
+        # this missed [checkversion <vers>] bc it has white space. adding \s breaks all.
+    """
+    # TODO fix regex!
+    flagstr = (
+        "[-help] [-version] [-verbose] [-allowunused] [-prompt] [-bench] "
+        "[-debug] [-batch] [-memory] [-disk] [-memgui] "
+        "[-checkversion <vers>] [-stdout <file>] [-stderr <file>] "
+    )
+    flagstr = flagstr.replace("-","")
+    flags = []
+    curr = ""
+    for x in flagstr:
+        if x not in "[]":
+            curr += x
+        else:
+            if len(curr.strip()) > 0:
+                flags.append( curr.split()[0] )
+            curr = ""
+    return flags
+
+
+def get_stilts_version():
+    vers_output = subprocess.getoutput("stilts -version").replace("\n"," ")
+    p = re.compile("STILTS version ([\d.-]+)")
+    res = p.search(vers_output)
+    return res.group(1)
+
+def get_stil_version():
+    vers_output = subprocess.getoutput("stilts -version").replace("\n"," ")
+    p = re.compile("STIL version ([\d.-]+)")
+    res = p.search(vers_output)
+    return res.group(1)
+
+def check_parameters(
+    input_parameters: dict, expected_parameters: dict, strict=True, warning=True
+):
+    if isinstance(expected_parameters, dict) and len(expected_parameters) == 0:
+        logger.warning("something went wrong finding the expected parameters.")
+
+    for key, val in input_parameters.items():
+
+        # what if we're given "ifmt3" and known tasks only knows about "ifmtN" ?
+        bare_parameter = "".join(x for x in key if x.isalpha())
+        if bare_parameter + "N" in expected_parameters:
+            param = bare_parameter + "N"
+        else:
+            param = key
+
+        if param not in expected_parameters:
+            print("we got here", strict, warning, param)
+            if strict:
+                print("strict is",  strict, warning, param)
+                raise StiltsUnknownParameterError(
+                    f"unknown parameter '{key}', expected are {expected_parameters.keys()}"
+                )
+            if warning:
+                logger.warning(
+                    f"unknown parameter '{key}', expected are {expected_parameters.keys()}"
+                )
+            continue # if param is not in expected, then we can't get accepted options!
+
+        accepted = expected_parameters.get(param, None)
+        if accepted is not None:
+            if val not in accepted:
+                if strict:
+                    raise StiltsUnknownParameterError(
+                        f"'{val}' not in accepted {accepted} for parameter '{key}'"
+                    )
+                if warning:
+                    logger.warning(
+                        f"'{val}' not in accepted {accepted} for parameter '{key}'"
+                    )
+
+def check_flags(input_flags: dict, strict=True, warning=True):
+    for flag in input_flags.keys():
+        if flag not in STILTS_FLAGS and strict:
+            raise ValueError(f"flag {flag} unknown: {STILTS_FLAGS}")
+        if warning:
+            logger.warning(f"flag {flag} unknown: {STILTS_FLAGS}")
+
+
+def format_parameters(config, capitalise=True, float_precision=6):
     """
     Capitalise config keys.
     Convert pathlib.Path types to str

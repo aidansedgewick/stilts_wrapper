@@ -1,5 +1,6 @@
 import os
 import pytest
+from pathlib import Path
 
 import numpy as np
 
@@ -59,6 +60,23 @@ class Test__PystiltsTest:
         s2 = Stilts("tskymatch2", join="bad_value", strict=False)
         assert s2.parameters["join"] == "bad_value"
 
+    def test__input_astropy_table(self,):
+        tab = Table({
+            "col1": np.random.uniform(0, 1, 10),
+            "col2": np.random.uniform(0, 1, 10),
+        })
+        expected_path = Path.cwd() / "stilts_wrapper_tmatch2_in1.cat.fits"
+        st = Stilts("tmatch2", in1=tab, values1=1.0)
+        assert expected_path.exists()
+        os.remove(expected_path)
+        assert not expected_path.exists()
+
+    def test__reserved_keyword_as_parameter(self,):
+        st = Stilts("tmatch1", in_="catalog.cat.fits", values=1.0)
+        assert "in_" not in st.parameters
+        assert "in" in st.parameters
+        assert "values" in st.parameters        
+
     def test__update_parameters(self,):
         st = Stilts(
             "tskymatch2",
@@ -89,6 +107,28 @@ class Test__PystiltsTest:
         assert "in3" not in st.known_task_parameters
         assert "inN" in st.known_task_parameters
 
+
+    def test__cleanup(self,):
+        tab = Table({
+            "col1": np.random.uniform(0, 1, 10),
+            "col2": np.random.uniform(0, 1, 10),
+        })
+        expected_path = Path.cwd() / "stilts_wrapper_tmatch1_in.cat.fits"
+        st = Stilts("tmatch1", in_=tab, values=1.0)
+        assert expected_path.exists()
+        st.cleanup()
+        assert not expected_path.exists()
+
+        input_path = Path.cwd() / "very_important_do_not_delete.cat.fits"
+        tab.write(input_path)
+        st = Stilts("tmatch1", in_=input_path)
+        st.cleanup_paths.append(input_path) # Oh no, accidentally add to list to be deleted.
+        with pytest.raises(StiltsError):
+            # Actually, it won't be deleted - it doesn't have "stilts_wrapper" in the name.
+            st.cleanup()
+        assert input_path.exists()
+        os.remove(input_path)
+        assert not input_path.exists()
 
 
     def test__set_all_formats(self,):
@@ -143,7 +183,7 @@ class Test__PystiltsTest:
         assert "omode=out" in stilts2.cmd
         assert "ofmt=fits" in stilts2.cmd        
 
-    def test__tskymatch2_convenience_method(self, ):
+    def test__tskymatch2_convenience_method(self,):
         m = Stilts.tskymatch2(
             in1="./table1.cat.fits", 
             in2="./table2.cat.fits",
@@ -170,7 +210,10 @@ class Test__PystiltsTest:
             m_f1 = Stilts.tskymatch2(bad_param=1.0)
         with pytest.raises(StiltsUnknownParameterError):
             m_f2 = Stilts.tskymatch2(join="bad_option")
-        
+
+
+    def test__tmatch2_convenience_method(self,):
+        pass
 
     
 

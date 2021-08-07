@@ -1,68 +1,33 @@
 import os
 import logging
 import subprocess
+import traceback
 import yaml
+from pathlib import Path
+
+from astropy.table import Table
 
 from .known_tasks import KNOWN_TASKS
-from .utils import get_docs_hint, task_help, get_task_parameters, format_flags, STILTS_EXE
+from .exc import StiltsError, StiltsUnknownTaskError, StiltsUnknownParameterError
+from pystilts import utils
+
+STILTS_EXE = utils.STILTS_EXE
+STILTS_FLAGS = utils.get_stilts_flags()
 
 logger = logging.getLogger("stilts_wrapper")
 
-class StiltsError(Exception):
-    pass
-
-class StiltsUnknownParameterError(StiltsError):
-    pass
-
-class StiltsUnknownTaskError(StiltsError):
-    pass
-
-def check_parameters(
-    input_parameters: dict, expected_parameters: dict, strict=True, warning=True
-):
-    for key, val in input_parameters.items():
-
-        # what if we're given "ifmt3" and known tasks only knows about "ifmtN" ?
-        bare_parameter = "".join(x for x in key if x.isalpha())
-        if bare_parameter + "N" in expected_parameters:
-            param = bare_parameter + "N"
-        else:
-            param = key
-
-        if param not in expected_parameters:
-            print("we got here", strict, warning, param)
-            if strict:
-                print("strict is",  strict, warning, param)
-                raise StiltsUnknownParameterError(
-                    f"parameter {key}, expected are {expected_parameters.keys()}"
-                )
-            if warning:
-                logger.warning(
-                    f"parameter {key}, expected are {expected_parameters.keys()}"
-                )
-            continue # if param is not in expected, then we can't get accepted options!
-
-        accepted = expected_parameters.get(param, None)
-        if accepted is not None:
-            if val not in accepted:
-                if strict:
-                    raise StiltsUnknownParameterError(
-                        f"'{val}' not in accepted {accepted} for parameter '{key}'"
-                    )
-                if warning:
-                    logger.warning(
-                        f"'{val}' not in accepted {accepted} for parameter '{key}'"
-                    )
-
 class Stilts:
 
-    STILTS_EXE = STILTS_EXE
+    STILTS_EXE = utils.STILTS_EXE
     KNOWN_TASKS = KNOWN_TASKS
 
     INPUT_FORMATS = None
     OUTPUT_FORMATS = None
 
-    def __init__(self, task, strict=True, warning=True, **kwargs):
+    stilts_version = utils.get_stilts_version()
+    stil_version = utils.get_stil_version()
+
+    def __init__(self, task, strict=True, warning=True, *args, **kwargs):
 
         self.strict = strict        
         self.warning = warning
@@ -71,27 +36,57 @@ class Stilts:
             raise StiltsUnknownTaskError(f"Task {task} not known.")
         self.task = task
 
-
-
         try:
-            self.known_task_parameters = get_task_parameters(self.task)
+            self.known_task_parameters = utils.get_task_parameters(self.task)
         except:
             self.known_task_parameters = {}
  
+        self.flags = {x: None for x in args}
+        flag_kwargs = [k for k in kwargs.keys() if k in STILTS_FLAGS]
+        for flag in flag_kwargs:
+            self.flags[flag] = kwargs.pop(kwargs)
+        
+        self.cleanup_paths = []
         self.parameters = kwargs
+        to_update = {}
+        to_fix = [k for k in self.parameters.keys() if k.endswith("_")]
+        for k in to_fix:
+            self.parameters[k[:-1]] = self.parameters.pop(k)
+        for key, val in self.parameters.items():
+            if isinstance(val, Table):
+                output_path = Path.cwd() / f"stilts_wrapper_{task}_{key}.cat.fits"
+                try:
+                    val.write(output_path)
+                    logger.info(f"written {key} to {output_path}")
+                    to_update[key] = output_path
+                    if key.startswith("in"):
+                        fmt_key = key.replace("in", "ifmt")
+                        to_update[fmt_key] = "fits"
+                    self.cleanup_paths.append(output_path)
+                except Exception:
+                    traceback.print_exc()
+                    raise StiltsError(
+                        f"Couldn't write table to {output_path}. Does it already exist?\n"
+                        f"Try deleting this path by hand.\n"
+                        f"Or try saving the table first, and passing a path as normal."
+                    )
+        self.parameters.update(to_update)
+
+
         if self.strict or self.warning:
-            check_parameters(
+            utils.check_flags(self.flags, strict=self.strict, warning=self.warning)
+            utils.check_parameters(
                 kwargs, 
                 self.known_task_parameters, 
                 strict=self.strict, 
                 warning=self.warning
             )
-
         self.build_cmd()
+           
 
     def build_cmd(self, float_precision=6):
         cmd = f"{self.STILTS_EXE} {self.task} "
-        formatted_parameters = format_flags(
+        formatted_parameters = utils.format_parameters(
             self.parameters, capitalise=False, float_precision=float_precision
         )
         cmd += " ".join(f"{k}={v}" for k, v in formatted_parameters.items())
@@ -100,7 +95,7 @@ class Stilts:
     def update_parameters(self, **kwargs):
         self.parameters.update(kwargs)
         if self.strict or self.warning:
-            check_parameters(
+            utils.check_parameters(
                 self.parameters, 
                 self.known_task_parameters, 
                 strict=self.strict, 
@@ -117,20 +112,31 @@ class Stilts:
             fmt_flags[fmtN_key] = fmt      
         self.update_parameters(**fmt_flags)
 
-    def run(self, verbose=False, strict=True):
+    def run(self, verbose=False, strict=True, cleanup=True):
         if verbose:
             logger.info("run \033[031m{self.task.upper()}\033[0m")
             logger.info("{self.cmd}")
         
         status = subprocess.call(self.cmd, shell=True)
-        self.status = status        
-
+        self.status = status
+        if cleanup:
+            self.cleanup()
         if strict and status > 0:
             print()
-            docs_hint = get_docs_hint(self.task)
+            docs_hint = utils.get_docs_hint(self.task)
             errormsg = f"run: Something went wrong (status={status}).\n{docs_hint}"
             raise StiltsError(error_msg)
         return status
+
+    def cleanup(self,):
+        for path in self.cleanup_paths:
+            logger.info("removing temporary table at {path}")
+            if "stilts_wrapper" not in str(path):
+                raise StiltsError(
+                    f"Can't delete {path}:\n"
+                    f"I won't remove data that I've not written myself."
+                )
+            os.remove(path)
 
     @classmethod
     def tskymatch2(cls, all_formats=None, **kwargs):
