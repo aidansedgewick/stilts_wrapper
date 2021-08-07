@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.6, 3.7, 3.8, 3.9]
+        python-version: [3.6, 3.9]
 
     steps:
     - uses: actions/checkout@v2
@@ -34,7 +34,8 @@ jobs:
         sudo apt-get install stilts
     - name: Install package
       run: |
-        python3 setup.py install
+        #python3 setup.py install
+        python3 -m pip install -e .
     #- name: Lint with flake8
     #  run: |
     #    # stop the build if there are Python syntax errors or undefined names
