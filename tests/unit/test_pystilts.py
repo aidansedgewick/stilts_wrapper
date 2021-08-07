@@ -1,15 +1,15 @@
 import os
 import pytest
 
-import numpy
+import numpy as np
 
 from astropy.table import Table
 
-from pystilts import Stilts, StiltsError, utils
+from pystilts import (
+    Stilts, StiltsError, StiltsUnknownParameterError, StiltsUnknownTaskError, utils
+)
 
 class Test__PystiltsTest:
-
-    #def 
 
     def test__class_init(self,):
         st = Stilts("tskymatch2")
@@ -35,10 +35,29 @@ class Test__PystiltsTest:
         assert st.cmd == "stilts tskymatch2 " # there is a space, before kwargs are added.
 
     def test__raises_error_for_unknown_task(self,):
-        with pytest.raises(StiltsError):
+        with pytest.raises(StiltsUnknownTaskError):
             failing_stilts1 = Stilts("this_task")
-        with pytest.raises(StiltsError):
+        with pytest.raises(StiltsUnknownTaskError):
             failing_stilts2 = Stilts("tskymatch3")
+
+        # ...but can provide bad parameter with strict = False
+        stilts = Stilts("bad_task", strict=False)
+        assert stilts.task == "bad_task"
+
+    def test__raises_error_for_unknown_parameters(self,):
+        with pytest.raises(StiltsUnknownParameterError):
+            failing_stilts1 = Stilts("tskymatch2", bad_parameter=1.0)
+        stilts = Stilts("tskymatch2", join="all1")
+        assert stilts.parameters["join"] == "all1"
+        with pytest.raises(StiltsUnknownParameterError):
+            failing_stilts2 = Stilts("tskymatch2", join="bad_value")
+
+        # ...but can provide bad parameters with strict=False
+        s1 = Stilts("tskymatch2", bad_parameter=1.0, strict=False)
+        print(s1.cmd)
+        assert np.isclose(s1.parameters["bad_parameter"], 1.0)
+        s2 = Stilts("tskymatch2", join="bad_value", strict=False)
+        assert s2.parameters["join"] == "bad_value"
 
     def test__update_parameters(self,):
         st = Stilts(
@@ -64,4 +83,94 @@ class Test__PystiltsTest:
             + "ra1=old_ra1_expr dec1=old_dec1_expr ra2=new_ra2_expr dec2=new_dec2_expr "
             + "join=all1 error=0.500000"
         )
+
+    def test__param_checker_for_paramN(self,):
+        st = Stilts("tmatchn", in3="table3.cat.fits", ifmt3="csv")
+        assert "in3" not in st.known_task_parameters
+        assert "inN" in st.known_task_parameters
+
+
+
+    def test__set_all_formats(self,):
+        stilts1 = Stilts("tskymatch2", in1="this_path.cat.fits", in2="that_path.cat.fits")
+        assert "ifmt1" not in stilts1.parameters
+        assert "ifmt2" not in stilts1.parameters
+        assert "omode" not in stilts1.parameters
+        assert "ofmt" not in stilts1.parameters
+
+        assert stilts1.cmd == (
+            "stilts tskymatch2 in1=this_path.cat.fits in2=that_path.cat.fits"
+        )
+
+        stilts1.set_all_formats("fits")
+        assert stilts1.parameters["ifmt1"] == "fits"
+        assert stilts1.parameters["ifmt2"] == "fits"
+        assert stilts1.parameters["omode"] == "out"
+        assert stilts1.parameters["ofmt"] == "fits"
+
+        assert "ifmt1=fits" in stilts1.cmd
+        assert "ifmt2=fits" in stilts1.cmd
+        assert "omode=out" in stilts1.cmd
+        assert "ofmt=fits" in stilts1.cmd        
+
+        stilts2 = Stilts(
+            "tmatchn", 
+            nin=4,
+            in1="path1.cat.fits", 
+            in2="path2.cat.fits", 
+            in3="path3.cat.fits",
+            in4="path3.cat.fits",
+        )
+        assert "ifmt1" not in stilts2.parameters
+        assert "ifmt2" not in stilts2.parameters
+        assert "ifmt3" not in stilts2.parameters
+        assert "ifmt4" not in stilts2.parameters
+        assert "omode" not in stilts2.parameters
+        assert "ofmt" not in stilts2.parameters
+
+        stilts2.set_all_formats("fits")
+        assert stilts2.parameters["ifmt1"] == "fits"
+        assert stilts2.parameters["ifmt2"] == "fits"
+        assert stilts2.parameters["ifmt3"] == "fits"
+        assert stilts2.parameters["ifmt4"] == "fits"
+        assert stilts2.parameters["omode"] == "out"
+        assert stilts2.parameters["ofmt"] == "fits"
+
+        assert "ifmt1=fits" in stilts2.cmd
+        assert "ifmt2=fits" in stilts2.cmd
+        assert "ifmt3=fits" in stilts2.cmd
+        assert "ifmt4=fits" in stilts2.cmd
+        assert "omode=out" in stilts2.cmd
+        assert "ofmt=fits" in stilts2.cmd        
+
+    def test__tskymatch2_convenience_method(self, ):
+        m = Stilts.tskymatch2(
+            in1="./table1.cat.fits", 
+            in2="./table2.cat.fits",
+            ra1="ra_1",
+            dec1="dec_1",
+            ra2="ra_2",
+            dec2="dec_2",
+            join="all1", 
+            all_formats="fits", 
+        )
+        
+        assert m.task == "tskymatch2"
+        assert m.parameters["ifmt1"] == "fits"
+        assert m.parameters["ifmt2"] == "fits"
+        assert m.parameters["omode"] == "out"
+        assert m.parameters["ofmt"] == "fits"
+        assert m.parameters["ra1"] == "ra_1"
+        assert m.parameters["ra2"] == "ra_2"
+        assert m.parameters["dec1"] == "dec_1"
+        assert m.parameters["dec2"] == "dec_2"
+
+        ## test still fails for bad inputs
+        with pytest.raises(StiltsUnknownParameterError):
+            m_f1 = Stilts.tskymatch2(bad_param=1.0)
+        with pytest.raises(StiltsUnknownParameterError):
+            m_f2 = Stilts.tskymatch2(join="bad_option")
+        
+
+    
 

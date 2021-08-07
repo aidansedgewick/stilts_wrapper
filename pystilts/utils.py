@@ -3,9 +3,10 @@ import subprocess
 from pathlib import Path
 
 STILTS_EXE = os.environ.get("PYSTILTS_EXE", "stilts")
+DOCS_URL = "http://www.star.bris.ac.uk/~mbt/stilts/"
 
 def get_docs_hint(task):
-    hint = f"check docs?\n    {docs_url}/sun256/{task}.html"
+    hint = f"check docs?\n    {DOCS_URL}sun256/{task}.html"
     return hint
 
 def task_help(task, parameter=None):
@@ -15,7 +16,7 @@ def task_help(task, parameter=None):
     help = subprocess.getoutput(help_cmd)
     return help
 
-def get_task_parameters(task):
+def get_task_parameters(task, nin=None):
     help = task_help(task)
     spl = help.split()
     assert spl[1] == task

@@ -1,2 +1,7 @@
-from .pystilts import Stilts, StiltsError
+from .pystilts import (
+    Stilts,
+    StiltsError, 
+    StiltsUnknownTaskError,
+    StiltsUnknownParameterError
+)
 
