@@ -6,7 +6,7 @@ import numpy as np
 
 from astropy.table import Table
 
-from pystilts import (
+from stilts_wrapper import (
     Stilts, StiltsError, StiltsUnknownParameterError, StiltsUnknownTaskError, utils
 )
 
@@ -65,7 +65,7 @@ class Test__PystiltsTest:
             "col1": np.random.uniform(0, 1, 10),
             "col2": np.random.uniform(0, 1, 10),
         })
-        expected_path = Path.cwd() / "stilts_wrapper_tmatch2_in1.cat.fits"
+        expected_path = Path.cwd() / "api_written_temp_tmatch2_in1.cat.fits"
         st = Stilts("tmatch2", in1=tab, values1=1.0)
         assert expected_path.exists()
         os.remove(expected_path)
@@ -113,7 +113,7 @@ class Test__PystiltsTest:
             "col1": np.random.uniform(0, 1, 10),
             "col2": np.random.uniform(0, 1, 10),
         })
-        expected_path = Path.cwd() / "stilts_wrapper_tmatch1_in.cat.fits"
+        expected_path = Path.cwd() / "api_written_temp_tmatch1_in.cat.fits"
         st = Stilts("tmatch1", in_=tab, values=1.0)
         assert expected_path.exists()
         st.cleanup()

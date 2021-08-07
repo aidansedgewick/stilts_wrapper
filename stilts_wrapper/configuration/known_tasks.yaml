@@ -1,0 +1,37 @@
+table_processing_commands:
+- tcopy 
+- tpipe
+- tmatch2
+- tskymatch2
+- tmatch1
+- tmatchn
+- tjoin
+- tcube
+- tcat
+- tcatn
+- tmulti
+- tmultin
+- tloop
+plotting_commands:
+- plot2plane
+- plot2sky
+- plot2cube
+- plot2sphere
+- plot2time
+vot_commands:
+- votcopy
+- votlint
+vo_commands:
+- cone
+- tapquery
+- tapresume
+- tapskymatch
+- cdsskymatch
+- taplint
+- datalinklint
+- regquery
+- coneskymatch
+skypix_commands:
+- tskymap
+- pixfoot
+- pixsample

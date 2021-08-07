@@ -1,10 +1,10 @@
 from setuptools import setup, find_packages
 
 setup(
-        name="pystilts",
+        name="stilts_wrapper",
         version="0.1.0",
-        description="Run suite for DXS reduction",
-        url="https://github.com/aidansedgewick/pystilts",
+        description="Thin wrapper around astro STILTS",
+        url="https://github.com/aidansedgewick/stilts_wrapper",
         author="aidan-sedgewick",
         author_email='aidansedgewick@gmail.com',
         license="MIT license",

@@ -4,7 +4,7 @@ import numpy as np
 
 from astropy.coordinates import SkyCoord
 
-from pystilts import utils
+from stilts_wrapper import utils
 
 def test__get_doc_str():
 
