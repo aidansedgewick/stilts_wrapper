@@ -7,14 +7,11 @@ from astropy.coordinates import SkyCoord
 from stilts_wrapper import utils
 
 def test__get_doc_str():
-
     assert utils.DOCS_URL == "http://www.star.bris.ac.uk/~mbt/stilts/"
-
     doc_hint = utils.get_docs_hint("tskymatch2")
     assert doc_hint == (
         "check docs?\n    http://www.star.bris.ac.uk/~mbt/stilts/sun256/tskymatch2.html"
     )
-
 
 def test__get_task_help():
     string1 = utils.get_task_help("tskymatch2")
@@ -28,7 +25,6 @@ def test__get_stil_version():
     vers = utils.get_stil_version()
     assert isinstance(vers, str)
     
-
 def test__format_parameters():
     test_config = {
         "tuple_int_test": (100, 400, 9000),

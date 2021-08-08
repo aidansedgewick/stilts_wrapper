@@ -6,11 +6,14 @@ from pathlib import Path
 
 from astropy.coordinates import SkyCoord
 
-from .exc import StiltsError, StiltsUnknownTaskError, StiltsUnknownParameterError
+from .known_tasks import KNOWN_TASKS, EXPECTED_PARAMETERS
+from .exc import (
+    StiltsError, StiltsUnknownTaskError, StiltsUnknownParameterError
+)
 
 logger = logging.getLogger("stilts_utils")
 
-STILTS_EXE = os.environ.get("PYSTILTS_EXE", "stilts")
+STILTS_EXE = os.environ.get("STILTS_WRAPPER_EXE", "stilts")
 DOCS_URL = "http://www.star.bris.ac.uk/~mbt/stilts/"
 
 def get_docs_hint(task):
@@ -18,31 +21,17 @@ def get_docs_hint(task):
     return hint
 
 def get_task_help(task, parameter=None):
-    help_cmd = f"{STILTS_EXE} {task} help"
+    help_cmd = f"PAGER= {STILTS_EXE} {task} help"
+    # PAGER= prevents the "less" command from appearing.
     if parameter is not None:
         help_cmd += f"={parameter}"
     help = subprocess.getoutput(help_cmd)
-
-    if "SYNOPSIS" in help:
-        pass
+    print("HELP IS")
+    print(help)
     return help
 
 def get_task_parameters(task):
-    help = get_task_help(task)
-    spl = help.split()
-    assert spl[1] == task
-    parameters = {}
-    for line in spl[2:]:
-        line = line.replace("[", "").replace("]", "")
-        param, vals = line.split("=")
-        if vals.startswith("<") and vals.endswith(">"):
-            accepted = None
-        else:
-            accepted = vals.split("|")
-        #if param.startswith("ifmt") and accepted is None:
-        #    accepted = INPUT_FORMATS
-        parameters[param] = accepted
-    return parameters
+    return EXPECTED_PARAMETERS[task]
 
 def get_stilts_flags():
     """
@@ -98,9 +87,7 @@ def check_parameters(
             param = key
 
         if param not in expected_parameters:
-            print("we got here", strict, warning, param)
             if strict:
-                print("strict is",  strict, warning, param)
                 raise StiltsUnknownParameterError(
                     f"unknown parameter '{key}', expected are {expected_parameters.keys()}"
                 )
