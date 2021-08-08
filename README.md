@@ -12,7 +12,9 @@ More docs coming soon...
 
 ## Install
 
-For now:
+You should be able to `pip install stilts-wrapper`.
+
+Or:
 1) clone this repo with `git clone https://github.com/aidansedgewick/stilts_wrapper.git`.
 2) `cd stilts_wrapper`
 3) `python3 setup.py install`
@@ -21,10 +23,6 @@ assumes you have STILTS software installed. if not you should just be able
 to do `sudo apt-get install stilts` (or equivalent for your package manager).
 
 ## Use
-
-If you call stilts with something other than just `stilts` from the
-command line, you should be able to `export STILTS_WRAPPER_EXE=<command>` 
-to environment variables.
 
 The main API is the class `Stilts`.
 
@@ -143,10 +141,6 @@ You can also use `pathlib` objects.
 
 ```
 >>> from pathlib import Path
->>> print(Path.cwd())
-/home/user
 >>> my_path = Path.cwd() / "my_catalog.cat.fits"
 >>> st =  Stilts.tmatch1(in_=my_path)
->>> "in1=/home/user/my_catalog.cat.fits" in st.cmd
-True
-```
+>>> 
