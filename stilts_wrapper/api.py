@@ -93,7 +93,7 @@ class Stilts:
                 self.flags, capitalise=False, float_precision=float_precision
             )
             cmd += " ".join(
-                f"-{flag}" if val is "None" else f"-{flag} {val}" 
+                f"-{flag}" if val == "None" else f"-{flag} {val}" 
                 for flag, val in formatted_flags.items()
             ) + " "
 

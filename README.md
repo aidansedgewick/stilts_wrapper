@@ -1,3 +1,4 @@
+[![PyPI version](https://badge.fury.io/py/stilts-wrapper.svg)](https://badge.fury.io/py/stilts-wrapper)
 [![codecov](https://codecov.io/gh/aidansedgewick/stilts_wrapper/branch/main/graph/badge.svg?token=MZI48732VB)](https://codecov.io/gh/aidansedgewick/stilts_wrapper)
 
 # stilts_wrapper
@@ -20,6 +21,10 @@ assumes you have STILTS software installed. if not you should just be able
 to do `sudo apt-get install stilts` (or equivalent for your package manager).
 
 ## Use
+
+If you call stilts with something other than just `stilts` from the
+command line, you should be able to `export STILTS_WRAPPER_EXE=<command>` 
+to environment variables.
 
 The main API is the class `Stilts`.
 
@@ -138,6 +143,10 @@ You can also use `pathlib` objects.
 
 ```
 >>> from pathlib import Path
+>>> print(Path.cwd())
+/home/user
 >>> my_path = Path.cwd() / "my_catalog.cat.fits"
 >>> st =  Stilts.tmatch1(in_=my_path)
->>> 
+>>> "in1=/home/user/my_catalog.cat.fits" in st.cmd
+True
+```

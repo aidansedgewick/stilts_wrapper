@@ -310,15 +310,11 @@ class Test__PystiltsTest:
             ["Jra", "Jdec", "Jmag", "Kra", "Kdec", "Kmag", "Separation"]
         )
 
-        assert sum(np.isfinite(catalog["Jmag"])) == 10
-        assert sum(np.isfinite(catalog["Kmag"])) == 10
-
-        #assert np.allclose(catalog["Jmag"][1:-1] - catalog["Kmag"][1:-1], 1.0)
+        assert len(catalog[np.isfinite(catalog["Jmag"])]) == 10
+        assert len(catalog[np.isfinite(catalog["Kmag"])]) == 10
         
         os.remove(outpath)
         assert not outpath.exists()
-
-
 
     def test__will_raise_error_for_bad_input(self,):
         tab1 = Table({
