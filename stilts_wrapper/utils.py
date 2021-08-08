@@ -25,12 +25,7 @@ def get_docs_hint(task):
     return hint
 
 def get_task_help(task, parameter=None):
-    help_cmd = f"PAGER= {STILTS_EXE} {task} help"
-    # PAGER= prevents the "less" command from appearing.
-    if parameter is not None:
-        help_cmd += f"={parameter}"
-    help_str = subprocess.getoutput(help_cmd)
-    return help_str
+    raise NotImplementedError
 
 def get_task_parameters(task):
     return EXPECTED_PARAMETERS[task]

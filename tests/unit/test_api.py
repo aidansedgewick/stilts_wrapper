@@ -94,9 +94,6 @@ class Test__PystiltsTest:
         os.remove(expected_path)
         assert not expected_path.exists()
 
-    def test__astropy_overwrite(self,):
-        pass
-
     def test__reserved_keyword_as_parameter(self,):
         st = Stilts("tmatch1", in_="catalog.cat.fits", values=1.0)
         assert "in_" not in st.parameters

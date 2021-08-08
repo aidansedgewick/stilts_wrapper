@@ -51,14 +51,10 @@ def dump_expected_parameters(
 ):
     expected_parameters = {}
     for task in known_tasks:
-        help_cmd = f"{STILTS_EXE} {task} help"
-        help_str = subprocess.getoutput(help_cmd)
-        print(help_str)
-        spl = help_str.split()
+        help_str = subprocess.getoutput(f"{STILTS_EXE} {task} help")
+        help_str.split()
         parameters = {}
         for line in spl[2:]:
-            if not any([x.isalpha() for x in line]):
-               continue
             line = line.replace("[", "").replace("]", "")
             try:
                 param, vals = line.split("=")

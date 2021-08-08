@@ -14,7 +14,8 @@ def test__get_doc_hint():
     )
 
 def test__get_task_help():
-    string1 = utils.get_task_help("tskymatch2")
+    with pytest.raises(NotImplementedError):
+        string1 = utils.get_task_help("tskymatch2")
     
 def test__get_stilts_version():
     vers = utils.get_stilts_version()

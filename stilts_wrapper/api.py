@@ -29,7 +29,7 @@ class Stilts:
     stil_version = utils.get_stil_version()
 
     def __init__(
-        self, task, *args, strict=True, warning=True, overwrite_temp=False, **kwargs
+        self, task, *args, strict=True, warning=True, **kwargs
     ):
         self.strict = strict        
         self.warning = warning
@@ -57,21 +57,13 @@ class Stilts:
         for key, val in self.parameters.items():
             if isinstance(val, Table):
                 output_path = Path.cwd() / f"api_written_temp_{task}_{key}.cat.fits"
-                try:
-                    val.write(output_path)
-                    logger.info(f"written {key} to {output_path}")
-                    to_update[key] = output_path
-                    if key.startswith("in"):
-                        fmt_key = key.replace("in", "ifmt")
-                        to_update[fmt_key] = "fits"
-                    self.cleanup_paths.append(output_path)
-                except Exception:
-                    traceback.print_exc()
-                    raise StiltsError(
-                        f"Couldn't write table to {output_path}. Does it already exist?\n"
-                        f"Try deleting this path by hand.\n"
-                        f"Or try saving the table first, and passing a path as normal."
-                    )
+                val.write(output_path, overwrite=True)
+                logger.info(f"written {key} to {output_path}")
+                to_update[key] = output_path
+                if key.startswith("in"):
+                    fmt_key = key.replace("in", "ifmt")
+                    to_update[fmt_key] = "fits"
+                self.cleanup_paths.append(output_path)
         self.parameters.update(to_update)
 
         #====== check parameters are reasonable

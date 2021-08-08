@@ -1,0 +1,1481 @@
+cdsskymatch:
+  blocksize: null
+  cdstable: null
+  compress:
+  - 'true'
+  - 'false'
+  dec: null
+  find:
+  - all
+  - best
+  - best-remote
+  - each
+  - each-dist
+  fixcols:
+  - none
+  - dups
+  - all
+  icmd: null
+  ifmt: &id001
+  - fits
+  - colfits
+  - votable
+  - cdf
+  - csv
+  - ecsv
+  - acsii
+  - ipac
+  - mrt
+  - parquet
+  - feather
+  - gbin
+  - tst
+  - wdc
+  in: null
+  istream:
+  - 'true'
+  - 'false'
+  maxrec: null
+  ocmd: null
+  ofmt: null
+  omode:
+  - out
+  - meta
+  - stats
+  - count
+  - cgi
+  - discard
+  - topcat
+  - samp
+  - plastic
+  - tosql
+  - gui
+  out: null
+  presort:
+  - 'true'
+  - 'false'
+  ra: null
+  radius: null
+  serviceurl: null
+  suffixin: null
+  suffixremote: null
+  usemoc:
+  - 'true'
+  - 'false'
+cone:
+  compress:
+  - 'true'
+  - 'false'
+  dataformat: null
+  lat: null
+  lon: null
+  radius: null
+  servicetype:
+  - cone
+  - ssa
+  - sia1
+  - sia2
+  - sia
+  serviceurl: null
+  skysys:
+  - icrs
+  - fk5
+  - fk4
+  - galactic
+  - supergalactic
+  - ecliptic
+  verb:
+  - '1'
+  - '2'
+  - '3'
+coneskymatch:
+  compress:
+  - 'true'
+  - 'false'
+  copycols: null
+  dataformat: null
+  dec: null
+  emptyok:
+  - 'true'
+  - 'false'
+  erract:
+  - abort
+  - ignore
+  - retry
+  - retry<n>
+  find:
+  - best
+  - all
+  - each
+  fixcols:
+  - none
+  - dups
+  - all
+  footnside: null
+  icmd: null
+  ifmt: *id001
+  in: null
+  istream:
+  - 'true'
+  - 'false'
+  ocmd: null
+  ofmt: null
+  omode:
+  - out
+  - meta
+  - stats
+  - count
+  - cgi
+  - discard
+  - topcat
+  - samp
+  - plastic
+  - tosql
+  - gui
+  ostream:
+  - 'true'
+  - 'false'
+  out: null
+  parallel: null
+  ra: null
+  scorecol: null
+  servicetype:
+  - cone
+  - ssa
+  - sia1
+  - sia2
+  - sia
+  serviceurl: null
+  sr: null
+  suffix0: null
+  suffix1: null
+  usefoot:
+  - 'true'
+  - 'false'
+  verb:
+  - '1'
+  - '2'
+  - '3'
+datalinklint:
+  debug:
+  - 'true'
+  - 'false'
+  format:
+  - text
+  - json
+  maxrepeat: null
+  report:
+  - EWISF+
+  truncate: null
+  votable:
+  - <filename>
+  - <URL>
+  - '-'
+pixfoot:
+  dec: null
+  icmd: null
+  ifmt: *id001
+  in: null
+  istream:
+  - 'true'
+  - 'false'
+  mocfmt:
+  - fits
+  - json
+  order: null
+  out: null
+  ra: null
+  radius: null
+pixsample:
+  icmd: null
+  ifmt: *id001
+  in: null
+  insys:
+  - icrs
+  - fk5
+  - fk4
+  - galactic
+  - supergalactic
+  - ecliptic
+  lat: null
+  lon: null
+  ocmd: null
+  ofmt: null
+  omode:
+  - out
+  - meta
+  - stats
+  - count
+  - cgi
+  - discard
+  - topcat
+  - samp
+  - plastic
+  - tosql
+  - gui
+  out: null
+  pcmd: null
+  pfmt: null
+  pixdata: null
+  pixorder:
+  - nested
+  - ring
+  - (auto)
+  pixsys:
+  - icrs
+  - fk5
+  - fk4
+  - galactic
+  - supergalactic
+  - ecliptic
+  radius: null
+  stat:
+  - point
+  - mean
+plot2cube:
+  acmd: null
+  afmt: null
+  animate: null
+  astream:
+  - 'true'
+  - 'false'
+  auxclip: null
+  auxcrowd: null
+  auxflip:
+  - 'true'
+  - 'false'
+  auxfunc:
+  - log
+  - linear
+  - histogram
+  - histolog
+  - sqrt
+  - square
+  auxlabel: null
+  auxmap:
+  - <map-name>
+  - <color>-<color>-<color>...
+  auxmax: null
+  auxmin: null
+  auxquant: null
+  auxvisible:
+  - 'true'
+  - 'false'
+  auxwidth: null
+  compositor:
+  - 0..1
+  fontsize: null
+  fontstyle:
+  - standard
+  - serif
+  - mono
+  fontweight:
+  - plain
+  - bold
+  - italic
+  - bold_italic
+  forcebitmap:
+  - 'true'
+  - 'false'
+  frame:
+  - 'true'
+  - 'false'
+  gridaa:
+  - 'true'
+  - 'false'
+  insets: null
+  layerN: null
+  legborder:
+  - 'true'
+  - 'false'
+  legend:
+  - 'true'
+  - 'false'
+  leglabelN: null
+  legopaque:
+  - 'true'
+  - 'false'
+  legpos: null
+  legseq:
+  - <suffix>,...
+  minor:
+  - 'true'
+  - 'false'
+  omode:
+  - swing
+  - out
+  - cgi
+  - discard
+  - auto
+  parallel: null
+  phi: null
+  psi: null
+  seq:
+  - <suffix>,...
+  storage:
+  - simple
+  - memory
+  - disk
+  - policy
+  - cache
+  - basic-cache
+  - persistent
+  texttype:
+  - plain
+  - antialias
+  - latex
+  theta: null
+  title: null
+  xcrowd: null
+  xflip:
+  - 'true'
+  - 'false'
+  xlabel: null
+  xlog:
+  - 'true'
+  - 'false'
+  xmax: null
+  xmin: null
+  xoff: null
+  xpix: null
+  xsub: null
+  ycrowd: null
+  yflip:
+  - 'true'
+  - 'false'
+  ylabel: null
+  ylog:
+  - 'true'
+  - 'false'
+  ymax: null
+  ymin: null
+  yoff: null
+  ypix: null
+  ysub: null
+  zcrowd: null
+  zflip:
+  - 'true'
+  - 'false'
+  zlabel: null
+  zlog:
+  - 'true'
+  - 'false'
+  zmax: null
+  zmin: null
+  zoom: null
+  zoomaxes:
+  - xyz
+  zoomfactor: null
+  zsub: null
+plot2plane:
+  acmd: null
+  afmt: null
+  animate: null
+  aspect: null
+  astream:
+  - 'true'
+  - 'false'
+  auxclip: null
+  auxcrowd: null
+  auxflip:
+  - 'true'
+  - 'false'
+  auxfunc:
+  - log
+  - linear
+  - histogram
+  - histolog
+  - sqrt
+  - square
+  auxlabel: null
+  auxmap:
+  - <map-name>
+  - <color>-<color>-<color>...
+  auxmax: null
+  auxmin: null
+  auxquant: null
+  auxvisible:
+  - 'true'
+  - 'false'
+  auxwidth: null
+  compositor:
+  - 0..1
+  fontsize: null
+  fontstyle:
+  - standard
+  - serif
+  - mono
+  fontweight:
+  - plain
+  - bold
+  - italic
+  - bold_italic
+  forcebitmap:
+  - 'true'
+  - 'false'
+  grid:
+  - 'true'
+  - 'false'
+  gridcolor:
+  - <rrggbb>
+  - red
+  - blue
+  - '...'
+  insets: null
+  labelcolor:
+  - <rrggbb>
+  - red
+  - blue
+  - '...'
+  layerN: null
+  legborder:
+  - 'true'
+  - 'false'
+  legend:
+  - 'true'
+  - 'false'
+  leglabelN: null
+  legopaque:
+  - 'true'
+  - 'false'
+  legpos: null
+  legseq:
+  - <suffix>,...
+  minor:
+  - 'true'
+  - 'false'
+  navaxes:
+  - xy
+  - x
+  - y
+  omode:
+  - swing
+  - out
+  - cgi
+  - discard
+  - auto
+  parallel: null
+  seq:
+  - <suffix>,...
+  storage:
+  - simple
+  - memory
+  - disk
+  - policy
+  - cache
+  - basic-cache
+  - persistent
+  texttype:
+  - plain
+  - antialias
+  - latex
+  title: null
+  xanchor:
+  - 'true'
+  - 'false'
+  xcrowd: null
+  xflip:
+  - 'true'
+  - 'false'
+  xlabel: null
+  xlog:
+  - 'true'
+  - 'false'
+  xmax: null
+  xmin: null
+  xpix: null
+  xsub: null
+  yanchor:
+  - 'true'
+  - 'false'
+  ycrowd: null
+  yflip:
+  - 'true'
+  - 'false'
+  ylabel: null
+  ylog:
+  - 'true'
+  - 'false'
+  ymax: null
+  ymin: null
+  ypix: null
+  ysub: null
+  zoomfactor: null
+plot2sky:
+  acmd: null
+  afmt: null
+  animate: null
+  astream:
+  - 'true'
+  - 'false'
+  auxclip: null
+  auxcrowd: null
+  auxflip:
+  - 'true'
+  - 'false'
+  auxfunc:
+  - log
+  - linear
+  - histogram
+  - histolog
+  - sqrt
+  - square
+  auxlabel: null
+  auxmap:
+  - <map-name>
+  - <color>-<color>-<color>...
+  auxmax: null
+  auxmin: null
+  auxquant: null
+  auxvisible:
+  - 'true'
+  - 'false'
+  auxwidth: null
+  clat: null
+  clon: null
+  compositor:
+  - 0..1
+  crowd: null
+  fontsize: null
+  fontstyle:
+  - standard
+  - serif
+  - mono
+  fontweight:
+  - plain
+  - bold
+  - italic
+  - bold_italic
+  forcebitmap:
+  - 'true'
+  - 'false'
+  grid:
+  - 'true'
+  - 'false'
+  gridaa:
+  - 'true'
+  - 'false'
+  gridcolor:
+  - <rrggbb>
+  - red
+  - blue
+  - '...'
+  insets: null
+  labelcolor:
+  - <rrggbb>
+  - red
+  - blue
+  - '...'
+  labelpos:
+  - Auto
+  - External
+  - Internal
+  - Basic
+  - Hybrid
+  - None
+  layerN: null
+  legborder:
+  - 'true'
+  - 'false'
+  legend:
+  - 'true'
+  - 'false'
+  leglabelN: null
+  legopaque:
+  - 'true'
+  - 'false'
+  legpos: null
+  legseq:
+  - <suffix>,...
+  omode:
+  - swing
+  - out
+  - cgi
+  - discard
+  - auto
+  parallel: null
+  projection:
+  - sin
+  - aitoff
+  - car
+  - car0
+  radius: null
+  reflectlon:
+  - 'true'
+  - 'false'
+  scalebar:
+  - 'true'
+  - 'false'
+  seq:
+  - <suffix>,...
+  sex:
+  - 'true'
+  - 'false'
+  storage:
+  - simple
+  - memory
+  - disk
+  - policy
+  - cache
+  - basic-cache
+  - persistent
+  texttype:
+  - plain
+  - antialias
+  - latex
+  title: null
+  viewsys:
+  - equatorial
+  - galactic
+  - supergalactic
+  - ecliptic
+  xpix: null
+  ypix: null
+  zoomfactor: null
+plot2sphere:
+  acmd: null
+  afmt: null
+  animate: null
+  astream:
+  - 'true'
+  - 'false'
+  auxclip: null
+  auxcrowd: null
+  auxflip:
+  - 'true'
+  - 'false'
+  auxfunc:
+  - log
+  - linear
+  - histogram
+  - histolog
+  - sqrt
+  - square
+  auxlabel: null
+  auxmap:
+  - <map-name>
+  - <color>-<color>-<color>...
+  auxmax: null
+  auxmin: null
+  auxquant: null
+  auxvisible:
+  - 'true'
+  - 'false'
+  auxwidth: null
+  compositor:
+  - 0..1
+  crowd: null
+  cx: null
+  cy: null
+  cz: null
+  fontsize: null
+  fontstyle:
+  - standard
+  - serif
+  - mono
+  fontweight:
+  - plain
+  - bold
+  - italic
+  - bold_italic
+  forcebitmap:
+  - 'true'
+  - 'false'
+  frame:
+  - 'true'
+  - 'false'
+  gridaa:
+  - 'true'
+  - 'false'
+  insets: null
+  layerN: null
+  legborder:
+  - 'true'
+  - 'false'
+  legend:
+  - 'true'
+  - 'false'
+  leglabelN: null
+  legopaque:
+  - 'true'
+  - 'false'
+  legpos: null
+  legseq:
+  - <suffix>,...
+  minor:
+  - 'true'
+  - 'false'
+  omode:
+  - swing
+  - out
+  - cgi
+  - discard
+  - auto
+  parallel: null
+  phi: null
+  psi: null
+  scale: null
+  seq:
+  - <suffix>,...
+  storage:
+  - simple
+  - memory
+  - disk
+  - policy
+  - cache
+  - basic-cache
+  - persistent
+  texttype:
+  - plain
+  - antialias
+  - latex
+  theta: null
+  title: null
+  xoff: null
+  xpix: null
+  yoff: null
+  ypix: null
+  zoom: null
+  zoomfactor: null
+plot2time:
+  acmd: null
+  afmt: null
+  animate: null
+  astream:
+  - 'true'
+  - 'false'
+  auxclip: null
+  auxcrowd: null
+  auxflip:
+  - 'true'
+  - 'false'
+  auxfunc:
+  - log
+  - linear
+  - histogram
+  - histolog
+  - sqrt
+  - square
+  auxlabel: null
+  auxmap:
+  - <map-name>
+  - <color>-<color>-<color>...
+  auxmax: null
+  auxmin: null
+  auxquant: null
+  auxvisible:
+  - 'true'
+  - 'false'
+  auxwidth: null
+  compositor:
+  - 0..1
+  fontsize: null
+  fontstyle:
+  - standard
+  - serif
+  - mono
+  fontweight:
+  - plain
+  - bold
+  - italic
+  - bold_italic
+  forcebitmap:
+  - 'true'
+  - 'false'
+  grid:
+  - 'true'
+  - 'false'
+  insets: null
+  layerN: null
+  legborder:
+  - 'true'
+  - 'false'
+  legend:
+  - 'true'
+  - 'false'
+  leglabelN: null
+  legopaque:
+  - 'true'
+  - 'false'
+  legpos: null
+  legseq:
+  - <suffix>,...
+  minor:
+  - 'true'
+  - 'false'
+  navaxes:
+  - t
+  - y
+  - ty
+  omode:
+  - swing
+  - out
+  - cgi
+  - discard
+  - auto
+  parallel: null
+  seq:
+  - <suffix>,...
+  storage:
+  - simple
+  - memory
+  - disk
+  - policy
+  - cache
+  - basic-cache
+  - persistent
+  tcrowd: null
+  texttype:
+  - plain
+  - antialias
+  - latex
+  tformat:
+  - iso-8601
+  - year
+  - mjd
+  - unix
+  title: null
+  tlabel: null
+  tmax: null
+  tmin: null
+  tsub: null
+  xpix: null
+  ycrowd: null
+  yflip:
+  - 'true'
+  - 'false'
+  ylabel: null
+  ylog:
+  - 'true'
+  - 'false'
+  ymax: null
+  ymin: null
+  ypix: null
+  ysub: null
+  zoneN: null
+  zoomfactor: null
+regquery:
+  ocmd: null
+  ofmt: null
+  omode:
+  - out
+  - meta
+  - stats
+  - count
+  - cgi
+  - discard
+  - topcat
+  - samp
+  - plastic
+  - tosql
+  - gui
+  out: null
+  query: null
+  regurl: null
+  soapout: null
+taplint:
+  asyncurl: null
+  availabilityurl: null
+  capabilitiesurl: null
+  debug:
+  - 'true'
+  - 'false'
+  examplesurl: null
+  format:
+  - text
+  - json
+  interface:
+  - tap1.0
+  - tap1.1
+  - cap
+  maxrepeat: null
+  maxtable: null
+  report:
+  - EWISF+
+  stages:
+  - TMV
+  - TME
+  - TMS
+  - TMC
+  - CPV
+  - CAP
+  - AVV
+  - QGE
+  - QPO
+  - QAS
+  - UWS
+  - MDQ
+  - OBS
+  - UPL
+  - EXA
+  syncurl: null
+  tablesurl: null
+  tapurl: null
+  truncate: null
+tapquery:
+  adql: null
+  compress:
+  - 'true'
+  - 'false'
+  delete:
+  - finished
+  - never
+  - always
+  - now
+  destruction: null
+  executionduration: null
+  interface:
+  - tap1.0
+  - tap1.1
+  - cap
+  language: null
+  maxrec: null
+  nupload: null
+  ocmd: null
+  ofmt: null
+  omode:
+  - out
+  - meta
+  - stats
+  - count
+  - cgi
+  - discard
+  - topcat
+  - samp
+  - plastic
+  - tosql
+  - gui
+  out: null
+  parse:
+  - 'true'
+  - 'false'
+  poll: null
+  progress:
+  - 'true'
+  - 'false'
+  sync:
+  - 'true'
+  - 'false'
+  tapurl: null
+  ucmdN: null
+  ufmtN: null
+  uploadN: null
+  upnameN: null
+  upvotformat:
+  - TABLEDATA
+  - BINARY
+  - BINARY2
+tapresume:
+  compress:
+  - 'true'
+  - 'false'
+  delete:
+  - finished
+  - never
+  - always
+  - now
+  joburl: null
+  ocmd: null
+  ofmt: null
+  omode:
+  - out
+  - meta
+  - stats
+  - count
+  - cgi
+  - discard
+  - topcat
+  - samp
+  - plastic
+  - tosql
+  - gui
+  out: null
+  poll: null
+  progress:
+  - 'true'
+  - 'false'
+tapskymatch:
+  blockmaxrec: null
+  blocksize: null
+  compress:
+  - 'true'
+  - 'false'
+  find:
+  - all
+  - best
+  - each
+  - each-dist
+  fixcols:
+  - none
+  - dups
+  - all
+  icmd: null
+  ifmt: *id001
+  in: null
+  inlat: null
+  inlon: null
+  interface:
+  - tap1.0
+  - tap1.1
+  - cap
+  istream:
+  - 'true'
+  - 'false'
+  maxrec: null
+  ocmd: null
+  ofmt: null
+  omode:
+  - out
+  - meta
+  - stats
+  - count
+  - cgi
+  - discard
+  - topcat
+  - samp
+  - plastic
+  - tosql
+  - gui
+  out: null
+  sr: null
+  suffixin: null
+  suffixremote: null
+  sync:
+  - 'true'
+  - 'false'
+  tapcols: null
+  taplat: null
+  taplon: null
+  taptable: null
+  tapurl: null
+tcat:
+  countrows:
+  - 'true'
+  - 'false'
+  icmd: null
+  ifmt: *id001
+  in: null
+  istream:
+  - 'true'
+  - 'false'
+  lazy:
+  - 'true'
+  - 'false'
+  loccol: null
+  multi:
+  - 'true'
+  - 'false'
+  ocmd: null
+  ofmt: null
+  omode:
+  - out
+  - meta
+  - stats
+  - count
+  - cgi
+  - discard
+  - topcat
+  - samp
+  - plastic
+  - tosql
+  - gui
+  out: null
+  seqcol: null
+  uloccol: null
+tcatn:
+  countrows:
+  - 'true'
+  - 'false'
+  icmdN: null
+  ifmtN: *id001
+  inN: null
+  loccol: null
+  nin: null
+  ocmd: null
+  ofmt: null
+  omode:
+  - out
+  - meta
+  - stats
+  - count
+  - cgi
+  - discard
+  - topcat
+  - samp
+  - plastic
+  - tosql
+  - gui
+  out: null
+  seqcol: null
+  uloccol: null
+tcopy:
+  ifmt: *id001
+  in: null
+  ofmt: null
+  out: null
+tcube:
+  binsizes: null
+  bounds: null
+  cols: null
+  icmd: null
+  ifmt: *id001
+  in: null
+  istream:
+  - 'true'
+  - 'false'
+  nbins: null
+  otype:
+  - byte
+  - short
+  - int
+  - long
+  - float
+  - double
+  out: null
+  scale: null
+tjoin:
+  fixcols:
+  - none
+  - dups
+  - all
+  icmdN: null
+  ifmtN: *id001
+  inN: null
+  nin: null
+  ocmd: null
+  ofmt: null
+  omode:
+  - out
+  - meta
+  - stats
+  - count
+  - cgi
+  - discard
+  - topcat
+  - samp
+  - plastic
+  - tosql
+  - gui
+  out: null
+  suffixN: null
+tloop:
+  colname: null
+  end: null
+  forcefloat:
+  - 'true'
+  - 'false'
+  ocmd: null
+  ofmt: null
+  omode:
+  - out
+  - meta
+  - stats
+  - count
+  - cgi
+  - discard
+  - topcat
+  - samp
+  - plastic
+  - tosql
+  - gui
+  out: null
+  start: null
+  step: null
+tmatch1:
+  action:
+  - identify
+  - keep0
+  - keep1
+  - wide2
+  - wideN
+  icmd: null
+  ifmt: *id001
+  in: null
+  istream:
+  - 'true'
+  - 'false'
+  matcher: null
+  ocmd: null
+  ofmt: null
+  omode:
+  - out
+  - meta
+  - stats
+  - count
+  - cgi
+  - discard
+  - topcat
+  - samp
+  - plastic
+  - tosql
+  - gui
+  out: null
+  params: null
+  progress:
+  - none
+  - log
+  - profile
+  tuning: null
+  values: null
+tmatch2:
+  find:
+  - all
+  - best
+  - best1
+  - best2
+  fixcols:
+  - none
+  - dups
+  - all
+  icmd1: null
+  icmd2: null
+  ifmt1: *id001
+  ifmt2: *id001
+  in1: null
+  in2: null
+  join:
+  - 1and2
+  - 1or2
+  - all1
+  - all2
+  - 1not2
+  - 2not1
+  - 1xor2
+  matcher: null
+  ocmd: null
+  ofmt: null
+  omode:
+  - out
+  - meta
+  - stats
+  - count
+  - cgi
+  - discard
+  - topcat
+  - samp
+  - plastic
+  - tosql
+  - gui
+  out: null
+  params: null
+  progress:
+  - none
+  - log
+  - profile
+  scorecol: null
+  suffix1: null
+  suffix2: null
+  tuning: null
+  values1: null
+  values2: null
+tmatchn:
+  fixcols:
+  - none
+  - dups
+  - all
+  icmdN: null
+  ifmtN: *id001
+  inN: null
+  iref: null
+  joinN:
+  - default
+  - match
+  - nomatch
+  - always
+  matcher: null
+  multimode:
+  - pairs
+  - group
+  nin: null
+  ocmd: null
+  ofmt: null
+  omode:
+  - out
+  - meta
+  - stats
+  - count
+  - cgi
+  - discard
+  - topcat
+  - samp
+  - plastic
+  - tosql
+  - gui
+  out: null
+  params: null
+  progress:
+  - none
+  - log
+  - profile
+  suffixN: null
+  tuning: null
+  valuesN: null
+tmulti:
+  icmd: null
+  ifmt: *id001
+  in: null
+  istream:
+  - 'true'
+  - 'false'
+  multi:
+  - 'true'
+  - 'false'
+  ofmt: null
+  out: null
+tmultin:
+  icmdN: null
+  ifmtN: *id001
+  inN: null
+  nin: null
+  ofmt: null
+  out: null
+tpipe:
+  cmd: null
+  ifmt: *id001
+  in: null
+  istream:
+  - 'true'
+  - 'false'
+  ofmt: null
+  omode:
+  - out
+  - meta
+  - stats
+  - count
+  - cgi
+  - discard
+  - topcat
+  - samp
+  - plastic
+  - tosql
+  - gui
+  out: null
+tskymap:
+  cols: null
+  combine:
+  - sum
+  - sum-per-unit
+  - count
+  - count-per-unit
+  - mean
+  - median
+  - min
+  - max
+  - stdev
+  - hit
+  complete:
+  - 'true'
+  - 'false'
+  count:
+  - 'true'
+  - 'false'
+  icmd: null
+  ifmt: *id001
+  in: null
+  istream:
+  - 'true'
+  - 'false'
+  lat: null
+  lon: null
+  ocmd: null
+  ofmt: null
+  omode:
+  - out
+  - meta
+  - stats
+  - count
+  - cgi
+  - discard
+  - topcat
+  - samp
+  - plastic
+  - tosql
+  - gui
+  out: null
+  perunit:
+  - steradian
+  - degree2
+  - arcmin2
+  - arcsec2
+  - mas2
+  - uas2
+  tiling:
+  - hpx<K>
+  - healpixnest<K>
+  - healpixring<K>
+  - htm<K>
+tskymatch2:
+  dec1: null
+  dec2: null
+  error: null
+  find:
+  - all
+  - best
+  - best1
+  - best2
+  ifmt1: *id001
+  ifmt2: *id001
+  in1: null
+  in2: null
+  join:
+  - 1and2
+  - 1or2
+  - all1
+  - all2
+  - 1not2
+  - 2not1
+  - 1xor2
+  ofmt: null
+  omode:
+  - out
+  - meta
+  - stats
+  - count
+  - cgi
+  - discard
+  - topcat
+  - samp
+  - plastic
+  - tosql
+  - gui
+  out: null
+  ra1: null
+  ra2: null
+  tuning: null
+votcopy:
+  base: null
+  cache:
+  - 'true'
+  - 'false'
+  charset: null
+  format:
+  - TABLEDATA
+  - BINARY
+  - BINARY2
+  - FITS
+  href:
+  - 'true'
+  - 'false'
+  in: null
+  nomagic:
+  - 'true'
+  - 'false'
+  out: null
+  version:
+  - '1.0'
+  - '1.1'
+  - '1.2'
+  - '1.3'
+  - '1.4'
+votlint:
+  out: null
+  validate:
+  - 'true'
+  - 'false'
+  version:
+  - '1.0'
+  - '1.1'
+  - '1.2'
+  - '1.3'
+  - '1.4'
+  votable: null
