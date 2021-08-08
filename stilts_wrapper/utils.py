@@ -6,7 +6,7 @@ from pathlib import Path
 
 from astropy.coordinates import SkyCoord
 
-from .known_tasks import KNOWN_TASKS, EXPECTED_PARAMETERS
+from .known_tasks import load_known_tasks, load_expected_parameters, load_known_flags
 from .exc import (
     StiltsError, StiltsUnknownTaskError, StiltsUnknownParameterError
 )
@@ -16,8 +16,12 @@ logger = logging.getLogger("stilts_utils")
 STILTS_EXE = os.environ.get("STILTS_WRAPPER_EXE", "stilts")
 DOCS_URL = "http://www.star.bris.ac.uk/~mbt/stilts/"
 
+KNOWN_TASKS = load_known_tasks()
+EXPECTED_PARAMETERS = load_expected_parameters()
+KNOWN_FLAGS = load_known_flags()
+
 def get_docs_hint(task):
-    hint = f"check docs?\n    {DOCS_URL}sun256/{task}.html"
+    hint = f"task docs at {DOCS_URL}sun256/{task}.html"
     return hint
 
 def get_task_help(task, parameter=None):
@@ -25,39 +29,11 @@ def get_task_help(task, parameter=None):
     # PAGER= prevents the "less" command from appearing.
     if parameter is not None:
         help_cmd += f"={parameter}"
-    help = subprocess.getoutput(help_cmd)
-    print("HELP IS")
-    print(help)
-    return help
+    help_str = subprocess.getoutput(help_cmd)
+    return help_str
 
 def get_task_parameters(task):
     return EXPECTED_PARAMETERS[task]
-
-def get_stilts_flags():
-    """
-    pattern = re.compile("\[([-\w\s\<\>])+\]")
-    for match in pattern.finditer(flagstr):
-        print(match)
-        # this missed [checkversion <vers>] bc it has white space. adding \s breaks all.
-    """
-    # TODO fix regex!
-    flagstr = (
-        "[-help] [-version] [-verbose] [-allowunused] [-prompt] [-bench] "
-        "[-debug] [-batch] [-memory] [-disk] [-memgui] "
-        "[-checkversion <vers>] [-stdout <file>] [-stderr <file>] "
-    )
-    flagstr = flagstr.replace("-","")
-    flags = []
-    curr = ""
-    for x in flagstr:
-        if x not in "[]":
-            curr += x
-        else:
-            if len(curr.strip()) > 0:
-                flags.append( curr.split()[0] )
-            curr = ""
-    return flags
-
 
 def get_stilts_version():
     vers_output = subprocess.getoutput("stilts -version").replace("\n"," ")
@@ -109,15 +85,14 @@ def check_parameters(
                         f"'{val}' not in accepted {accepted} for parameter '{key}'"
                     )
 
-def check_flags(input_flags: dict, strict=True, warning=True):
-    for flag in input_flags.keys():
-        if flag not in STILTS_FLAGS and strict:
-            raise ValueError(f"flag {flag} unknown: {STILTS_FLAGS}")
+def check_flags(input_flags: list, strict=True, warning=True):
+    for flag in input_flags:
+        if flag not in KNOWN_FLAGS and strict:
+            raise StiltsError(f"flag '{flag}' unknown: {KNOWN_FLAGS}")
         if warning:
-            logger.warning(f"flag {flag} unknown: {STILTS_FLAGS}")
+            logger.warning(f"flag '{flag}' unknown: {KNOWN_FLAGS}")
 
-
-def format_parameters(config, capitalise=True, float_precision=6):
+def format_parameters(config, capitalise=False, float_precision=6):
     """
     Capitalise config keys.
     Convert pathlib.Path types to str
@@ -145,6 +120,8 @@ def format_parameters(config, capitalise=True, float_precision=6):
             formatted_config[key] = str(value)
         elif isinstance(value, SkyCoord):
             formatted_config[key] = f"{value.ra.value:.{float_precision}f},{value.dec.value:.{float_precision}f}"
+        elif isinstance(value, bool):
+            formatted_config[key] = str(value).lower()
         elif isinstance(value, tuple):
             if all(isinstance(x, int) for x in value):
                 formatted_config[key] = ','.join(f"{x}" for x in value)

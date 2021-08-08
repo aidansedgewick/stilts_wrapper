@@ -4,13 +4,13 @@ import numpy as np
 
 from astropy.coordinates import SkyCoord
 
-from stilts_wrapper import utils
+from stilts_wrapper import utils, StiltsError
 
-def test__get_doc_str():
+def test__get_doc_hint():
     assert utils.DOCS_URL == "http://www.star.bris.ac.uk/~mbt/stilts/"
     doc_hint = utils.get_docs_hint("tskymatch2")
     assert doc_hint == (
-        "check docs?\n    http://www.star.bris.ac.uk/~mbt/stilts/sun256/tskymatch2.html"
+        "task docs at http://www.star.bris.ac.uk/~mbt/stilts/sun256/tskymatch2.html"
     )
 
 def test__get_task_help():
@@ -19,12 +19,20 @@ def test__get_task_help():
 def test__get_stilts_version():
     vers = utils.get_stilts_version()
     assert isinstance(vers, str)
+    assert any([x.isnumeric() for x in vers])
     # not sure what else to test
 
 def test__get_stil_version():
     vers = utils.get_stil_version()
     assert isinstance(vers, str)
-    
+    assert any([x.isnumeric() for x in vers])
+
+def test__bad_flags():
+    utils.check_flags(["verbose", "allowunused"])
+    with pytest.raises(StiltsError):
+        utils.check_flags(["this_is_a_bad_flag"])
+    utils.check_flags(["this_is_a_bad_flag"], strict=False)
+
 def test__format_parameters():
     test_config = {
         "tuple_int_test": (100, 400, 9000),
@@ -36,7 +44,7 @@ def test__format_parameters():
         "test_coord": SkyCoord(ra=98.765, dec=-45.999, unit="deg")
     }
     
-    output_config = utils.format_parameters(test_config)
+    output_config = utils.format_parameters(test_config, capitalise=True)
     assert output_config["TUPLE_INT_TEST"] == "100,400,9000"
     assert output_config["TUPLE_FLOAT_TEST"] == "1234.543000,6000.000000"
     assert output_config["NONE_TEST"] == "None"

@@ -60,16 +60,42 @@ class Test__PystiltsTest:
         s2 = Stilts("tskymatch2", join="bad_value", strict=False)
         assert s2.parameters["join"] == "bad_value"
 
+    def test__accepts_flags(self,):
+        m = Stilts("tmatch2", "verbose", in1="test.fits")
+        print(m.flags)
+        assert "verbose" in m.flags
+        assert "-verbose" in m.cmd
+        assert "in1" in m.parameters
+        with pytest.raises(StiltsError):
+            m2 = Stilts("tmatchn", "a_bad_flag")
+        m3 = Stilts("tmatch2", "a_bad_flag", strict=False)
+        assert "a_bad_flag" in m3.flags
+
+    def test__convert_flags_with_values(self,):
+        m = Stilts("tmatch2", "verbose", stdout="stdout_here", in1="table.fits")
+        assert "verbose" in m.flags
+        assert " -verbose " in m.cmd
+        assert "stdout" in m.flags
+        assert " -stdout stdout_here " in m.cmd
+        assert "stdout" not in m.parameters
+        assert "in1" in m.parameters
+    
     def test__input_astropy_table(self,):
         tab = Table({
             "col1": np.random.uniform(0, 1, 10),
             "col2": np.random.uniform(0, 1, 10),
         })
         expected_path = Path.cwd() / "api_written_temp_tmatch2_in1.cat.fits"
+        if expected_path.exists():
+            os.remove(expected_path)
+        assert not expected_path.exists()
         st = Stilts("tmatch2", in1=tab, values1=1.0)
         assert expected_path.exists()
         os.remove(expected_path)
         assert not expected_path.exists()
+
+    def test__astropy_overwrite(self,):
+        pass
 
     def test__reserved_keyword_as_parameter(self,):
         st = Stilts("tmatch1", in_="catalog.cat.fits", values=1.0)
@@ -107,13 +133,15 @@ class Test__PystiltsTest:
         assert "in3" not in st.known_task_parameters
         assert "inN" in st.known_task_parameters
 
-
     def test__cleanup(self,):
         tab = Table({
             "col1": np.random.uniform(0, 1, 10),
             "col2": np.random.uniform(0, 1, 10),
         })
         expected_path = Path.cwd() / "api_written_temp_tmatch1_in.cat.fits"
+        if expected_path.exists():
+            os.remove(expected_path)
+        assert not expected_path.exists()
         st = Stilts("tmatch1", in_=tab, values=1.0)
         assert expected_path.exists()
         st.cleanup()
@@ -211,9 +239,115 @@ class Test__PystiltsTest:
         with pytest.raises(StiltsUnknownParameterError):
             m_f2 = Stilts.tskymatch2(join="bad_option")
 
-
     def test__tmatch2_convenience_method(self,):
-        pass
+        m = Stilts.tmatch2(in1="table1.fits", in2="table2.fits", values1=1.0)
+        assert m.task == "tmatch2"
+        assert m.parameters["in1"] == "table1.fits"
+        assert m.parameters["in2"] == "table2.fits"
+        assert np.isclose(m.parameters["values1"], 1.0)
+
+    def test__tmatch1_convenience_method(self,):
+        m = Stilts.tmatch1(in_=Path.cwd()/"my_table.fits")
+        assert m.task == "tmatch1"
+        assert "in=" + str(Path.cwd()) + "/my_table.fits" in m.cmd  # ie, properly formatted.
+
+    def test__tmatchn_convenience_method(self,):
+        m = Stilts.tmatchn(
+            in1="in1.csv", in2="in2.csv", in3="in3.csv", in4="in4.csv",
+            all_formats="csv"
+        )
+
+        assert m.task == "tmatchn"
+        assert m.parameters["ifmt1"] == "csv"
+        assert m.parameters["ifmt2"] == "csv"
+        assert m.parameters["ifmt3"] == "csv"
+        assert m.parameters["ifmt4"] == "csv"
+        assert m.parameters["omode"] == "out"
+        assert m.parameters["ofmt"] == "csv"
+
+    def test__do_tskymatch2(self,):
+        tab1 = Table({
+            "Jra": np.linspace(1, 10, 10).astype(float),
+            "Jdec": np.zeros(10).astype(float),
+            "Jmag": np.linspace(15.5, 20.5, 10),
+        })
+        tab2 = Table({
+            "Kra": np.linspace(0, 9, 10).astype(float) + 1e-5, 
+            "Kdec": np.zeros(10).astype(float),
+            "Kmag": np.linspace(16., 21., 10),
+        })
+        
+        exp1_path = Path.cwd() / "api_written_temp_tskymatch2_in1.cat.fits"
+        if exp1_path.exists():
+            os.remove(exp1_path)
+        assert not exp1_path.exists()
+        exp2_path = Path.cwd() / "api_written_temp_tskymatch2_in2.cat.fits"
+        if exp2_path.exists():
+            os.remove(exp2_path)
+        assert not exp2_path.exists()
+
+        outpath = Path.cwd() / "run_test_tskymatch2.cat.fits"
+        if outpath.exists():
+            os.remove(outpath)
+        assert not outpath.exists()
+
+        matcher = Stilts.tskymatch2(
+            in1=tab1, in2=tab2, out=outpath, all_formats="fits", join="1or2", find="best",
+            ra1="Jra", dec1="Jdec", ra2="Kra", dec2="Kdec",
+            error=1.0,
+        )
+        # check we have written the tables.
+        assert exp1_path.exists()
+        assert exp2_path.exists()
+
+        matcher.run()
+        assert outpath.exists()
+
+        assert not exp1_path.exists()        
+        assert not exp2_path.exists()
+
+        catalog = Table.read(outpath)
+        assert len(catalog) == 11
+
+        assert set(catalog.columns) == set(
+            ["Jra", "Jdec", "Jmag", "Kra", "Kdec", "Kmag", "Separation"]
+        )
+
+        assert sum(np.isfinite(catalog["Jmag"])) == 10
+        assert sum(np.isfinite(catalog["Kmag"])) == 10
+
+        #assert np.allclose(catalog["Jmag"][1:-1] - catalog["Kmag"][1:-1], 1.0)
+        
+        os.remove(outpath)
+        assert not outpath.exists()
+
+
+
+    def test__will_raise_error_for_bad_input(self,):
+        tab1 = Table({
+            "x": np.random.uniform(0, 100, 50),
+            "y": np.random.uniform(0, 100, 50),
+        })
+        st = Stilts.tmatchn(in1=tab1)
+        # python class has initialised ok
+        exp_path = Path.cwd() / "api_written_temp_tmatchn_in1.cat.fits"
+        assert exp_path.exists()
+
+        with pytest.raises(StiltsError):
+            st.run()
+        assert not exp_path.exists() # cleanup happens regardless.
+        
+        # can run with bad input without raising python error.
+        st2 = Stilts.tmatchn(in1=tab1, strict=False)
+        assert exp_path.exists()
+        status = st2.run()
+        assert status > 0
+        assert not exp_path.exists()
+        
+        
+
+
+
 
     
 
