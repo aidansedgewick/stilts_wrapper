@@ -7,6 +7,8 @@ Thin python wrapper around Mark Taylor's [STILTS table tools](http://www.star.br
 Intended mainly for use with the table processing tasks.
 (Only tested with these tasks.)
 
+More docs coming soon...
+
 ## Install
 
 For now:
@@ -34,7 +36,17 @@ example
 >>> st.run()
 ```
 
-Stilts has an attribute `parameters`, so you can see what parameters you've loaded.
+`Stilts` has an attribute `parameters`, so you can see what 
+parameters you've loaded.
+
+Or, you can see the command you're about to run
+
+```
+>>> st = Stilts("tskymatch2", ra1="ra", dec1="dec", in1="my_cat.cat.fits")
+>>> st.cmd
+"stilts tskymatch2 ra=ra dec=dec in1=my_cat.cat.fits
+```
+
 If you give an unexpected parameter, it will raise an error:
 
 ```
@@ -51,6 +63,10 @@ True
 
 You'll should still get a warning - but you can silence this too, by also using  `warning=False`.
 
+No attempt is made to tell if you've supplied enough parameters for a
+a sucessful use of STILTS.
+
+
 There are a couple of convnience methods. For instance,
 if all your tables as fits format (or all csv, or whatever):
 
@@ -61,8 +77,16 @@ if all your tables as fits format (or all csv, or whatever):
 ...    ra1="ra_Jband", dec1="dec_Jband", ra2="ra_Kband", dec2="dec_Kband",
 ... )
 >>> st.format_all_as("fits")
->>> print(
+>>> print(st.parameters["ifmt1"])
+fits
+>>> print(st.parameters["ifmt2"])
+fits
 ```
+
+This will also set `omode` as `out` (necessary to save as fits).
+It should recognise any `inN` and set their format. 
+ie, for `tmatchn`, if you give `in3=<some-path`, it should work.
+
 
 For some of the table processing tasks (currently tskymatch2, tmatch2, tmatch1, tmatchn) there are methods to call directly
 
@@ -91,7 +115,7 @@ SyntaxError
 ```
 
 To get around this, add a single underscore to the end of the keyword 
-(which is removed immediately in processing - it's only as a get around).
+(which is removed immediately in processing - it's for parsing only).
 
 ```
 >>> st = Stilts.tmatch1(in_="my_catalog.cat.fits")
@@ -101,4 +125,19 @@ True
 False
 ```
 
+Or you could do dictionary unpacking, `st = Stilts.tmatch1(**{"in": "my_catalog.cat.fits"})`
 
+There is mild astropy support.
+`inN` parameters can be astropy tables, and they're dumped into temporary
+fits files, and then removed at the end.
+
+Parameter can also be an `astropy.coordinates.SkyCoord`, and their ra/dec are
+read out in degrees, as a comma separated string.
+
+You can also use `pathlib` objects.
+
+```
+>>> from pathlib import Path
+>>> my_path = Path.cwd() / "my_catalog.cat.fits"
+>>> st =  Stilts.tmatch1(in_=my_path)
+>>> 
