@@ -79,7 +79,7 @@ if all your tables as fits format (or all csv, or whatever):
 ...    "tskymatch2", in1="Jband.cat.fits", in2="Kband.cat.fits"
 ...    ra1="ra_Jband", dec1="dec_Jband", ra2="ra_Kband", dec2="dec_Kband",
 ... )
->>> st.format_all_as("fits")
+>>> st.set_all_formats("fits")
 >>> print(st.parameters["ifmt1"])
 fits
 >>> print(st.parameters["ifmt2"])
@@ -95,16 +95,16 @@ For some of the table processing tasks (currently tskymatch2, tmatch2, tmatch1, 
 
 ```
 >>> from stilts_wrapper import Stilts
->>> st = Stilts.tskymatch2(ra1="ra1", all_format="fits")
+>>> st = Stilts.tskymatch2(ra1="ra1", all_formats="fits")
 >>> st.task
-"skymatch2"
+'tskymatch2'
 >>> st.parameters["ofmt"]
-fits
->>> "ra1" in st.parameters
+'fits'
+>>> 'ra1' in st.parameters
 True
 ```
 
-all_format does the same thing as `st.format_all_as()`
+all_formats does the same thing as `st.set_all_formats()`
 
 You can update any of the parameters with eg. `st.update_parameters(ra1="new_ra")`.
 
