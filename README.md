@@ -33,7 +33,7 @@ example
 >>> st = Stilts(
 ...    "tskymatch2", in1="Jband.cat.fits", in2="Kband.cat.fits",
 ...    ra1="ra_Jband", dec1="dec_Jband", ra2="ra_Kband", dec2="dec_Kband",
-...    out="output.cat.fits", omode="out", ofmt="out", ifmt1="fits", ifmt2="fits",
+...    out="output.cat.fits", omode="out", ofmt="fits", ifmt1="fits", ifmt2="fits",
 ... )  
 >>>
 >>> st.run()
